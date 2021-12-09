@@ -90,24 +90,28 @@ async function join() {
   client.on("user-joined", handleUserJoined);
   client.on("user-left", handleUserLeft);
 
+  //to create a local temporary local track to fetch teh samle size
   console.log("creating temp localtrack");
   tempLocalTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
   const getlocal = tempLocalTracks.audioTrack.getMediaStreamTrack().getCapabilities();
   const rate = getlocal.sampleRate.max;
   console.log("init rate:");
   console.log(rate);
+  //close temporary local track
+  tempLocalTracks.audioTrack.close();
 
   // join a channel and create local tracks, we can use Promise.all to run them concurrently
   [ options.uid, localTracks.audioTrack, localTracks.videoTrack ] = await Promise.all([
     // join the channel
     client.join(options.appid, options.channel, options.token || null, options.uid || null),
-    // create local tracks, using microphone and camera
+   //create new local track and assign the sample size from temporary local track
     AgoraRTC.createMicrophoneAudioTrack({
       encoderConfig: {
         sampleRate: rate,
 
       }
     }),
+     // create local tracks, using microphone and camera
     AgoraRTC.createCameraVideoTrack()
   ]);
 
