@@ -92,14 +92,19 @@ async function join() {
 
   //to create a local temporary local track to fetch teh samle size
   console.log("creating temp localtrack");
+  window.alert("temp local track created");
   tempLocalTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
   const getlocal = tempLocalTracks.audioTrack.getMediaStreamTrack().getCapabilities();
   const rate = getlocal.sampleRate.max;
+  const size = getlocal.sampleSize.max;
   console.log("init rate:");
   console.log(rate);
+  window.alert("init rate fetched from temp local track:" + rate);
+  window.alert("initsize is: " + size);
   //close temporary local track
   tempLocalTracks.audioTrack.close();
   console.log("temp track closed!");
+  window.alert("temp track closed");
 
   // join a channel and create local tracks, we can use Promise.all to run them concurrently
   [ options.uid, localTracks.audioTrack, localTracks.videoTrack ] = await Promise.all([
@@ -109,8 +114,10 @@ async function join() {
     AgoraRTC.createMicrophoneAudioTrack({
       encoderConfig: {
         sampleRate: rate,
+        sampleSize: size,
 
       }
+      
       
     }),
      // create local tracks, using microphone and camera
@@ -123,6 +130,7 @@ const changedRate = changedLocal.sampleRate.max;
 console.log("changed rate:");
 console.log(changedRate);
 console.log(localTracks.audioTrack);
+window.alert("changed rate for actual local track is: " + changedRate);
 
   showMuteButton();
   
