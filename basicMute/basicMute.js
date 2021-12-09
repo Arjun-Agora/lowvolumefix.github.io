@@ -96,11 +96,11 @@ async function join() {
   tempLocalTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
   const getlocal = tempLocalTracks.audioTrack.getMediaStreamTrack().getCapabilities();
   const rate = getlocal.sampleRate.max;
-  const size = getlocal.sampleSize.max;
+  //const size = getlocal.sampleSize.max;
   console.log("init rate:");
   console.log(rate);
   window.alert("init rate fetched from temp local track:" + rate);
-  window.alert("initsize is: " + size);
+  //window.alert("initsize is: " + size);
   //close temporary local track
   tempLocalTracks.audioTrack.close();
   console.log("temp track closed!");
@@ -114,7 +114,7 @@ async function join() {
     AgoraRTC.createMicrophoneAudioTrack({
       encoderConfig: {
         sampleRate: rate,
-        sampleSize: size,
+       // sampleSize: size,
 
       }
       
