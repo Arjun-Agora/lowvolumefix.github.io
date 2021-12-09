@@ -124,6 +124,7 @@ async function join() {
     AgoraRTC.createCameraVideoTrack()
   ]);
 
+
 const changedLocal = localTracks.audioTrack.getMediaStreamTrack().getCapabilities();
 const changedRate = changedLocal.sampleRate.max;
  
@@ -134,6 +135,22 @@ window.alert("changed rate for actual local track is: " + changedRate);
 
   showMuteButton();
   
+
+  const audioContext = new (window.AudioContext || window.webkitAudioContext) ();
+
+  function attachAudioTrack(remoteAudioTrack) {
+  const audioNode = audioContext.createMediaStreamSource(new MediaStream([remoteAudioTrack.mediaStreamTrack]));
+  const gainNode = audioContext.createGain();
+
+  
+  // Adjust this value depending on your customers' preference
+  gainNode.gain.value = 20;
+  
+  audioNode.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+}
+
+
   // play local video track
   localTracks.videoTrack.play("local-player");
   $("#local-player-name").text(`localVideo(${options.uid})`);
@@ -141,6 +158,7 @@ window.alert("changed rate for actual local track is: " + changedRate);
   // publish local tracks to channel
   await client.publish(Object.values(localTracks));
   console.log("publish success");
+
 }
 
 async function leave() {
@@ -172,6 +190,7 @@ async function subscribe(user, mediaType) {
   // subscribe to a remote user
   await client.subscribe(user, mediaType);
   console.log("subscribe success");
+  attachAudioTrack(user.audioTrack);
 
   // if the video wrapper element is not exist, create it.
   if (mediaType === 'video') {
