@@ -136,7 +136,7 @@ window.alert("changed rate for actual local track is: " + changedRate);
   showMuteButton();
   
 
-  const audioContext = new (window.AudioContext || window.webkitAudioContext) ();
+  
 
   function attachAudioTrack(remoteAudioTrack) {
   
@@ -182,7 +182,7 @@ async function subscribe(user, mediaType) {
   // subscribe to a remote user
   await client.subscribe(user, mediaType);
   console.log("subscribe success");
-  
+  const audioContext = new (window.AudioContext || window.webkitAudioContext) ();
   const audioNode = audioContext.createMediaStreamSource(new MediaStream([user.audioTrack.mediaStreamTrack]));
   const gainNode = audioContext.createGain();
 // Adjust this value depending on your customers' preference
